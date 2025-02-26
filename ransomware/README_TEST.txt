@@ -1,0 +1,1 @@
+SIMULATION: This is a fake ransom note for educational testing.

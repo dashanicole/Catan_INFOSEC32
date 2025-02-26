@@ -1,0 +1,13 @@
+import os
+
+def pseudo_encrypt(file_path, key=0xAA):
+    with open(file_path, 'rb') as f:
+        data = bytearray(f.read())
+    # XOR each byte with a key (reversible)
+    encrypted = bytes([b ^ key for b in data])
+    with open(file_path + ".test_encrypted", 'wb') as f:
+        f.write(encrypted)
+    print(f"Test-encrypted: {file_path}")
+
+# Test on a non-critical file (e.g., a copy of a dummy file)
+pseudo_encrypt("C:\\Users\\ACER\\Documents\\testAntiV\\dummy.txt")

@@ -1,0 +1,15 @@
+import os
+
+# Simulate scanning files (harmless)
+def scan_files(directory):
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            print(f"[SIMULATION] Accessed: {file_path}")
+
+# Test in a safe directory (e.g., a dummy folder with test files)
+scan_files("C:\\Users\\ACER\\Documents\\testAntiV")  # Replace with a non-critical path
+
+# Optional: Create a dummy "ransom note" (harmless text file)
+with open("README_TEST.txt", "w") as f:
+    f.write("SIMULATION: This is a fake ransom note for educational testing.")
