@@ -10,4 +10,4 @@ def pseudo_encrypt(file_path, key=0xAA):
     print(f"Test-encrypted: {file_path}")
 
 # Test on a non-critical file (e.g., a copy of a dummy file)
-pseudo_encrypt("C:\\Users\\ACER\\Documents\\testAntiV\\dummy.txt")
+pseudo_encrypt("C:\\Users\\ACER\\Documents\\ransomware\\dummy.txt")
