@@ -5,7 +5,6 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 
-# Generate a key from the password
 def generate_key(password, salt):
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -16,9 +15,8 @@ def generate_key(password, salt):
     key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
     return Fernet(key)
 
-# Encrypt the file in place
 def encrypt_file(filename, password):
-    salt = os.urandom(16)  # Generate a random salt
+    salt = os.urandom(16)
     fernet = generate_key(password, salt)
 
     with open(filename, 'rb') as f:
@@ -26,47 +24,52 @@ def encrypt_file(filename, password):
 
     encrypted = fernet.encrypt(data)
 
-    # Overwrite the original file with salt + encrypted data
     with open(filename, 'wb') as f:
         f.write(salt + encrypted)
 
-    print(f"File '{filename}' encrypted successfully.")
+    print(f"Encrypted: {filename}")
 
-# Decrypt the file in place
 def decrypt_file(filename, password):
     with open(filename, 'rb') as f:
-        salt = f.read(16)  # Extract the salt
-        encrypted_data = f.read()  # Get encrypted content
+        salt = f.read(16)
+        encrypted_data = f.read()
 
     fernet = generate_key(password, salt)
 
     try:
         decrypted = fernet.decrypt(encrypted_data)
-
-        # Overwrite the original file with decrypted data
         with open(filename, 'wb') as f:
             f.write(decrypted)
-
-        print(f"File '{filename}' decrypted successfully.")
+        print(f"Decrypted: {filename}")
     except:
-        print("Decryption failed! Wrong password or corrupted file.")
+        print(f"Failed to decrypt: {filename}")
 
-# Main execution function
 def main():
     action = input("Choose action (encrypt/decrypt): ").lower()
-    filename = input("Enter filename: ")
+    path = input("Enter file or folder path: ")
+    password = getpass(f"Enter {action}ion password: ")
 
-    if action == "encrypt":
-        password = getpass("Enter encryption password: ")
-        encrypt_file(filename, password)
-    elif action == "decrypt":
-        password = getpass("Enter decryption password: ")
-        decrypt_file(filename, password)
+    if os.path.isfile(path):
+        if action == "encrypt":
+            encrypt_file(path, password)
+        elif action == "decrypt":
+            decrypt_file(path, password)
+        else:
+            print("Invalid action.")
+    elif os.path.isdir(path):
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                try:
+                    if action == "encrypt":
+                        encrypt_file(file_path, password)
+                    elif action == "decrypt":
+                        decrypt_file(file_path, password)
+                except Exception as e:
+                    print(f"Error processing {file_path}: {str(e)}")
+        print(f"Completed processing all files in: {path}")
     else:
-        print("Invalid action.")
+        print("Invalid path specified.")
 
 if __name__ == "__main__":
     main()
-
-#password of sample.txt = "123" 
-#password of sample.jpg = "dasha"
