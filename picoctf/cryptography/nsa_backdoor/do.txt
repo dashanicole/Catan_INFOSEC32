@@ -1,0 +1,10 @@
+Do this on sagecell.sagemath.org
+p=
+q=
+c= 
+g=Mod(3,p)
+m=discrete_log(c,g)
+print(hex(m))
+g2=Mod(3,q)
+m2=discrete_log(c,g2)
+print(hex(m2))
